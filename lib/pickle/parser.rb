@@ -26,7 +26,13 @@ module Pickle
     # given a string like 'foo: expr' returns {key => value}
     def parse_field(field)
       if field =~ /^#{capture_key_and_value_in_field}$/
-        { $1 => eval($2) }
+        left = $1
+        right = $2
+        if right =~ /(\w+\.\w{3})\*/
+          { left => File.open("features/#{$1}") }
+        else
+          { left => eval(right) }
+        end
       else
         raise ArgumentError, "The field argument is not in the correct format.\n\n'#{field}' did not match: #{match_field}"
       end
