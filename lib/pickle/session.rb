@@ -40,6 +40,8 @@ module Pickle
       factory, label = *parse_model(pickle_ref)
       raise ArgumentError, "Can't create with an ordinal (e.g. 1st user)" if label.is_a?(Integer)
       fields = fields.is_a?(Hash) ? parse_hash(fields) : parse_fields(fields)
+      fields["rules"] = [fields["rules"]] if fields["rules"]
+      fields["actions"] = [fields["actions"]] if fields["actions"]
       record = pickle_config.factories[factory].create(fields)
       store_model(factory, label, record)
       record
